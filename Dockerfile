@@ -1,13 +1,17 @@
-FROM python:3.7-slim
+# Use an official Python runtime as a parent image
+FROM python:3.8-slim-buster
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Set the working directory in the container to /app
+WORKDIR /app
 
-COPY cefr_predictor/models/xgboost.joblib cefr_predictor/models/
-COPY cefr_predictor/preprocessing.py cefr_predictor/inference.py cefr_predictor/
-COPY CEFR_Predictor.py .
+# Copy the current directory contents into the container at /app
+ADD . /app
 
-EXPOSE 8080
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-CMD streamlit run --server.port 8080 --server.enableCORS false CEFR_Predictor.py 
-#--server.maxUploadSize 50 
+# Make port 80 available to the world outside this container
+EXPOSE 8000
+
+# Run the command to start uvicorn
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
