@@ -1,6 +1,14 @@
 # Use an official Python runtime as a parent image
 FROM python:3.8-slim-buster
 
+# Install gcc and other dependencies
+RUN apt-get update && apt-get install -y \
+  gcc \
+  libc-dev \
+  libffi-dev \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
 # Set the working directory in the container to /app
 WORKDIR /app
 
